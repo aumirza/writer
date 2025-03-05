@@ -1,22 +1,43 @@
 import {
-  Sidebar,
+  Sidebar as SidebarComponent,
   SidebarContent,
   SidebarFooter,
-  SidebarGroup,
   SidebarHeader,
 } from "@/components/ui/sidebar";
 
-export function AppSidebar() {
+import { NavUser } from "./NavUser";
+import { createClient } from "@/utils/supabase/server";
+import { sidebarItems } from "@/config/nav";
+import { NavMain } from "./NavMain";
+
+export async function AppSidebar() {
+  const supabase = await createClient();
+
+  const { data: authData } = await supabase.auth.getUser();
+  if (!authData.user) return null;
+  const { data } = await supabase
+    .from("users")
+    .select()
+    .eq("id", authData.user?.id)
+    .single();
+
   return (
-    <Sidebar>
+    <SidebarComponent className="min-h-screen bg-background border-r">
       <SidebarHeader>
-        <h1>Writer</h1>
+        <h2 className="text-lg font-semibold text-foreground">Writer</h2>
       </SidebarHeader>
       <SidebarContent>
-        <SidebarGroup />
-        <SidebarGroup />
+        <NavMain items={sidebarItems} />
       </SidebarContent>
-      <SidebarFooter />
-    </Sidebar>
+      <SidebarFooter>
+        <NavUser
+          user={{
+            name: data.full_name,
+            email: authData.user.email ?? "",
+            avatar: data.avatar_url,
+          }}
+        />
+      </SidebarFooter>
+    </SidebarComponent>
   );
 }
