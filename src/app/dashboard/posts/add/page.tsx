@@ -1,5 +1,5 @@
-import { DynamicEditor } from "@/components/DynamicEditor";
+import { PostEditor } from "@/components/PostEditor";
 
 export default function page() {
-  return <DynamicEditor />;
+  return <PostEditor />;
 }

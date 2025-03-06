@@ -11,7 +11,7 @@ export default function RootLayout({
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset>
-        <main>
+        <main className="h-full flex flex-col">
           <Header />
           {children}
         </main>
